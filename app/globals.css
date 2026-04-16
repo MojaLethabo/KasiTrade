@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─── */
+:root {
+  --bg:       #0a0a0a;
+  --bg-2:     #111111;
+  --bg-3:     #1a1a1a;
+  --bg-4:     #222222;
+  --border:   #2a2a2a;
+  --border-2: #333333;
+  --text:     #f5f5f5;
+  --text-2:   #a0a0a0;
+  --text-3:   #666666;
+  --white:    #ffffff;
+  --radius:   6px;
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── Typography ─── */
+h1 { font-size: clamp(1.25rem, 5vw, 1.75rem); font-weight: 700; letter-spacing: -0.03em; color: var(--white); line-height: 1.2; }
+h2 { font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; letter-spacing: -0.02em; color: var(--white); }
+h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: var(--white); }
+p  { line-height: 1.6; }
+
+/* ─── App Shell: MOBILE-FIRST ─── */
+/*
+  Structure on mobile:
+    <div.app-shell>
+      <header.topbar>       ← always visible on mobile
+      <div.shell-body>
+        <aside.sidebar>     ← off-screen, slides in
+        <main.main-content> ← full width
+    
+  On desktop (≥768px):
+    topbar hidden, sidebar always shown, content beside it
+*/
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Mobile top bar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  height: 52px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+/* Hide topbar on desktop */
+@media (min-width: 768px) {
+  .topbar { display: none; }
+}
+
+/* ── Shell body: sidebar + content side by side on desktop ── */
+.shell-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 40;
+}
+
+/* Mobile: sidebar off-screen, slides in */
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    z-index: 300;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ── Overlay for mobile ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 299;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.visible { display: block; }
+
+/* ── Main content ── */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  padding: 20px 16px;
+}
+
+@media (min-width: 640px) { .main-content { padding: 28px 24px; } }
+@media (min-width: 1024px){ .main-content { padding: 36px 48px; } }
+
+/* Page containers */
+.page-wrap    { max-width: 1100px; width: 100%; }
+.page-wrap-sm { max-width: 760px;  width: 100%; }
+
+/* ─── Hamburger ─── */
+.hamburger {
+  background: none;
+  border: 1px solid var(--border-2);
+  border-radius: 5px;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Cards ─── */
+.card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ─── Responsive grids ─── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+@media (min-width: 900px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
+
+.kpi-cell { background: var(--bg-2); padding: 16px; }
+@media (min-width: 640px) { .kpi-cell { padding: 20px 24px; } }
+
+.grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 700px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+.grid-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 960px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+/* ─── Input ─── */
+.input {
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 11px 13px;
+  width: 100%;
+  font-size: 16px; /* prevents iOS zoom */
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+  min-height: 46px;
+}
+@media (min-width: 768px) { .input { font-size: 13px; min-height: 38px; } }
+.input:focus { border-color: rgba(255, 255, 255, 0.35); }
+.input::placeholder { color: var(--text-3); }
+select.input { cursor: pointer; appearance: auto; }
+textarea.input { min-height: 80px; resize: vertical; }
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  min-height: 44px; /* touch target */
+  -webkit-tap-highlight-color: transparent;
+}
+@media (min-width: 768px) { .btn { min-height: 38px; } }
+
+.btn-primary   { background: var(--white); color: #000; }
+.btn-primary:hover { background: #ddd; }
+.btn-secondary { background: transparent; color: var(--text-2); border: 1px solid var(--border-2); }
+.btn-secondary:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
+.btn-ghost     { background: transparent; color: var(--text-3); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text-2); border-color: var(--border-2); }
+.btn-danger    { background: transparent; color: #ff5555; border: 1px solid rgba(255,68,68,0.3); }
+.btn-sm        { padding: 7px 13px; font-size: 12px; min-height: 36px; }
+.btn-full      { width: 100%; }
+
+/* ─── Form helpers ─── */
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.form-row-2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 480px) { .form-row-2 { grid-template-columns: 1fr 1fr; } }
+
+.form-row-3 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) { .form-row-3 { grid-template-columns: 2fr 1fr 1fr; } }
+
+/* ─── Badges ─── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: 3px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap;
+}
+.badge-green  { background: rgba(255,255,255,0.08); color: #d4d4d4; border: 1px solid rgba(255,255,255,0.15); }
+.badge-yellow { background: rgba(255,255,255,0.05); color: #a8a8a8; border: 1px solid rgba(255,255,255,0.1);  }
+.badge-red    { background: rgba(255,68,68,0.08);   color: #ff8080; border: 1px solid rgba(255,68,68,0.2);   }
+.badge-blue   { background: rgba(255,255,255,0.06); color: #c0c0c0; border: 1px solid rgba(255,255,255,0.12);}
+.badge-purple { background: rgba(255,255,255,0.05); color: #b8b8b8; border: 1px solid rgba(255,255,255,0.1); }
+.badge-white  { background: rgba(255,255,255,0.1);  color: #fff;    border: 1px solid rgba(255,255,255,0.2); }
+
+/* ─── Table ─── */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th {
+  text-align: left; padding: 10px 14px;
+  font-size: 10px; font-weight: 700; white-space: nowrap;
+  color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border);
+}
+.tbl td { padding: 12px 14px; border-bottom: 1px solid rgba(42,42,42,0.5); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* ─── Page header ─── */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+/* ─── Line item builder ─── */
+.line-item-row {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+@media (min-width: 600px) {
+  .line-item-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 120px 90px 32px;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    align-items: center;
+  }
+}
+
+.line-item-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+@media (min-width: 600px) { .line-item-meta { display: contents; margin-top: 0; } }
+
+.line-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+@media (min-width: 600px) { .line-item-actions { display: contents; margin-top: 0; justify-content: unset; } }
+
+/* ─── Misc ─── */
+.divider { height: 1px; background: var(--border); }
+.section-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; }
+.stat-num { font-size: clamp(1.2rem, 4vw, 1.6rem); font-weight: 700; letter-spacing: -0.04em; color: var(--white); font-variant-numeric: tabular-nums; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+/* ─── Print ─── */
+@media print {
+  body * { visibility: hidden; }
+  .print-target, .print-target * { visibility: visible; }
+  .print-target { position: fixed; left: 0; top: 0; width: 100%; background: #fff; color: #000; }
+}
